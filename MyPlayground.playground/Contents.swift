@@ -12,6 +12,10 @@ var subscription: Cancellable? = Timer.publish(every: 1, on: .main, in: .common)
   // Prints a log message for each event
   .print("streamPrint")
 
+  // Slows down rate of publishing. When e.g. the publisher gives out a value
+  // every 0.1 seconds, less data passes by here
+  .throttle(for: .seconds(1), scheduler: .main, latest: true)
+
   // Checks incoming data and can adapt it
   .scan(
     0,
