@@ -6,6 +6,10 @@ import PlaygroundSupport
 // A publisher alone doesn't do anything, it needs a subscription
 let subscription = Timer.publish(every: 1, on: .main, in: .common)
   .autoconnect()
+
+  // Prints a log message for each event
+  .print("streamPrint")
+
   // SINK: Attaches a subscriber with closure-based behavior
   // to a publisher that never fails.
   .sink(
