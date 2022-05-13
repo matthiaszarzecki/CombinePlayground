@@ -4,11 +4,27 @@ import PlaygroundSupport
 
 // Outputs 1 piece of data every second
 // A publisher alone doesn't do anything, it needs a subscription
-let subscription = Timer.publish(every: 1, on: .main, in: .common)
+var subscription: Cancellable? = Timer.publish(every: 1, on: .main, in: .common)
+  // automatically connects to its upstream connectable publisher.
+  // Certain publishers, like Timer.TimerPublisher, require a connection first.
   .autoconnect()
 
   // Prints a log message for each event
   .print("streamPrint")
+
+  // Checks incoming data and can adapt it
+  .scan(
+    0,
+    { (count, _) in
+      return count + 0
+    }
+  )
+
+  // Filters the incoming data so that only data passing the condition
+  // is passing, in this case everything above 5 and below 15
+  .filter(
+    { $0 > 5 && $0 < 15}
+  )
 
   // SINK: Attaches a subscriber with closure-based behavior
   // to a publisher that never fails.
@@ -27,5 +43,7 @@ let subscription = Timer.publish(every: 1, on: .main, in: .common)
 // Stops the publisher after 5 seconds
 RunLoop.main.schedule(after: .init(Date(timeIntervalSinceNow: 5))) {
   print("Cancelled Subscription!")
-  subscription.cancel()
+  
+  //subscription.cancel()
+  subscription = nil
 }
